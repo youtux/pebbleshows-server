@@ -14,8 +14,6 @@ TRAKTV_CLIENT_ID = os.environ["TRAKTV_CLIENT_ID"]
 TRAKTV_CLIENT_SECRET = os.environ["TRAKTV_CLIENT_SECRET"]
 PEBBLE_TIMELINE_API_KEY = os.environ["PEBBLE_TIMELINE_API_KEY"]
 MONGODB_URL = os.environ["MONGODB_URL"]
-PORT = os.environ["PORT"]
-
 
 app = Flask(__name__)
 app.secret_key = os.environ["APP_SECRET"]

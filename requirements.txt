@@ -1,5 +1,6 @@
 APScheduler==3.0.2
 bottle==0.12.8
+CherryPy==3.7.0
 Flask==0.10.1
 Flask-SSLify==0.1.5
 itsdangerous==0.24
