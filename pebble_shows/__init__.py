@@ -1,9 +1,8 @@
 import os
-import traceback
 
 from six.moves.urllib import parse
 
-from flask import Flask, redirect, url_for, session, request, jsonify, render_template
+from flask import Flask, redirect, url_for, request, jsonify, render_template
 from flask_sslify import SSLify
 from requests_oauthlib import OAuth2Session
 
@@ -17,7 +16,7 @@ MONGODB_URL = os.environ["MONGODB_URL"]
 
 app = Flask(__name__)
 app.secret_key = os.environ["APP_SECRET"]
-sslify = SSLify(app, permanent=True)
+sslify = SSLify(app, permanent=True, skips=['api/getLaunchData/'])
 
 TRAKTTV_AUTH_URL = 'https://trakt.tv/oauth/authorize'
 TRAKTTV_TOKEN_URL = "https://trakt.tv/oauth/token"
@@ -27,6 +26,7 @@ pin_db = PinDatabase(MONGODB_URL)
 
 def scheme(request):
     return request.headers.get('X-Forwarded-Proto', 'http')
+
 
 def json_error(message, status=500):
     message = {
@@ -57,7 +57,6 @@ def login():
 
 @app.route('/logout')
 def logout():
-    session.pop('trakttv_token', None)
     return redirect(url_for('index'))
 
 
