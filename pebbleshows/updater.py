@@ -17,7 +17,6 @@ import pebble
 TRAKTV_CLIENT_ID = os.environ["TRAKTV_CLIENT_ID"]
 MONGODB_URL = os.environ["MONGODB_URL"]
 PEBBLE_TIMELINE_API_KEY = os.environ["PEBBLE_TIMELINE_API_KEY"]
-DAYS_LOOKAHEAD = os.environ.get("DAYS_LOOKAHEAD", 15)
 
 ObjectResult = collections.namedtuple("ObjectResult",
     ("pin", "metadata", "future"))
@@ -77,10 +76,13 @@ def fetch_shows_and_send_pins():
     trakttv = Trakttv(TRAKTV_CLIENT_ID)
     pins_db = PinDatabase(MONGODB_URL)
 
+    today = datetime.datetime.today()
+    start_date = today - datetime.timedelta(days=3)
+    days = 15
+
     try:
         calendar = trakttv.all_shows_schedule(
-            start_date=datetime.date.today() - datetime.timedelta(days=1),
-            days=DAYS_LOOKAHEAD)
+            start_date=start_date, days=days)
     except requests.exceptions.HTTPError as e:
         l.error(e)
         return
@@ -124,11 +126,12 @@ def fetch_shows_and_send_pins():
         pins_db.upsert(pr.pin, pr.metadata)
 
         l.info("Pin (id={}, title={}) sent and updated.".format(
-            pin["id"],
-            pin["layout"].get("title", None),
+            pr.pin["id"],
+            pr.pin["layout"].get("title", None),
             )
         )
         l.debug(pin)
+    print("End of the job")
 
 
 if __name__ == "__main__":
@@ -137,7 +140,7 @@ if __name__ == "__main__":
     logging.getLogger("trakttv").setLevel(logging.INFO)
     logging.getLogger("scheduler").setLevel(logging.INFO)
 
-    fetch_shows_and_send_pins()
+    # fetch_shows_and_send_pins()
 
     every_night = CronTrigger(hour=3, minute=0, second=40)
     scheduler = BlockingScheduler()

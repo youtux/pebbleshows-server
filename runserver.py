@@ -1,7 +1,7 @@
 import os
 from cherrypy import wsgiserver
 
-from pebble_shows import app
+from pebbleshows import app
 
 port = int(os.environ.get("PORT", 5000))
 
