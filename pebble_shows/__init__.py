@@ -25,6 +25,9 @@ TRAKTTV_TOKEN_URL = "https://trakt.tv/oauth/token"
 pin_db = PinDatabase(MONGODB_URL)
 
 
+def scheme(request):
+    return request.headers.get('X-Forwarded-Proto', 'http')
+
 def json_error(message, status=500):
     message = {
             'status': status,
@@ -43,8 +46,10 @@ def index():
 
 @app.route('/login')
 def login():
-    trakttv = OAuth2Session(TRAKTV_CLIENT_ID,
-        redirect_uri=url_for('authorized', _external=True))
+    redirect_uri = url_for(
+        'authorized', _external=True, _scheme=scheme(request)
+    )
+    trakttv = OAuth2Session(TRAKTV_CLIENT_ID, redirect_uri=redirect_uri)
     authorization_url, state = trakttv.authorization_url(
         TRAKTTV_AUTH_URL)
     return redirect(authorization_url)
@@ -58,8 +63,10 @@ def logout():
 
 @app.route('/login/authorized')
 def authorized():
-    trakttv = OAuth2Session(TRAKTV_CLIENT_ID,
-        redirect_uri=url_for('authorized', _external=True))
+    redirect_uri = url_for(
+        'authorized', _external=True, _scheme=scheme(request)
+    )
+    trakttv = OAuth2Session(TRAKTV_CLIENT_ID, redirect_uri=redirect_uri)
 
     token = trakttv.fetch_token(
         TRAKTTV_TOKEN_URL,
