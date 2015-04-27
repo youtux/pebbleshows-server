@@ -1,0 +1,21 @@
+{
+  "name": "pebbleshows",
+  "version": "0.0.0",
+  "authors": [
+    "Alessio Bogon <youtux@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.4",
+    "jquery": "~2.1.3",
+    "jquery-mobile": "~1.4.5"
+  }
+}
