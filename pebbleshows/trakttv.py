@@ -15,6 +15,7 @@ class Trakttv(object):
         self.session.headers = {
             "trakt-api-key": self.client_id,
             "trakt-api-version": 2,
+            'Content-Type': 'application/json',
         }
 
     def all_shows_schedule(self, start_date, days):

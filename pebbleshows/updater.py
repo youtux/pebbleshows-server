@@ -76,8 +76,9 @@ def fetch_shows_and_send_pins():
     trakttv = Trakttv(TRAKTV_CLIENT_ID)
     pins_db = PinDatabase(MONGODB_URL)
 
-    today = datetime.datetime.today()
+    today = datetime.date.today()
     start_date = today - datetime.timedelta(days=3)
+
     days = 15
 
     try:
@@ -140,7 +141,7 @@ if __name__ == "__main__":
     logging.getLogger("trakttv").setLevel(logging.INFO)
     logging.getLogger("scheduler").setLevel(logging.INFO)
 
-    # fetch_shows_and_send_pins()
+    fetch_shows_and_send_pins()
 
     every_night = CronTrigger(hour=3, minute=0, second=40)
     scheduler = BlockingScheduler()
