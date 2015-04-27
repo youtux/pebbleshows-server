@@ -2,8 +2,9 @@ import os
 
 from six.moves.urllib import parse
 
-from flask import Flask, redirect, url_for, request, jsonify, render_template
+from flask import Flask, redirect, url_for, session, request, jsonify, render_template
 from flask_sslify import SSLify
+from flask_bower import Bower
 from requests_oauthlib import OAuth2Session
 
 from .pin_database import PinDatabase
@@ -17,6 +18,7 @@ MONGODB_URL = os.environ["MONGODB_URL"]
 app = Flask(__name__)
 app.secret_key = os.environ["APP_SECRET"]
 sslify = SSLify(app, permanent=True, skips=['api/getLaunchData/'])
+Bower(app)
 
 TRAKTTV_AUTH_URL = 'https://trakt.tv/oauth/authorize'
 TRAKTTV_TOKEN_URL = "https://trakt.tv/oauth/token"
@@ -42,6 +44,12 @@ def json_error(message, status=500):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@app.route('/pebbleConfig/')
+def pebbleConfig():
+    session['pebble'] = True
+    return render_template('pebbleConfig.html')
 
 
 @app.route('/login')
@@ -73,10 +81,13 @@ def authorized():
         authorization_response=request.url,
         )
     access_token = token['access_token']
-
-    pebble_url = "pebblejs://close#" + parse.urlencode(
-        {'accessToken': access_token})
-    return redirect(pebble_url)
+    if session.get('pebble', False):
+        session['pebble'] = False
+        pebble_url = "pebblejs://close#" + parse.urlencode(
+            {'accessToken': access_token})
+        return redirect(pebble_url)
+    else:
+        return redirect(url_for('index'))
 
 
 @app.route('/api/getLaunchData/<int:launch_code>')
