@@ -2,7 +2,7 @@ APScheduler==3.0.2
 CherryPy==3.7.0
 Flask==0.10.1
 Flask-Bower==1.1.1
-Flask-OAuthlib==0.9.1
+git+https://github.com/youtux/flask-oauthlib.git@1454a6bcbb5248715363b416317a8c63315cfe89#egg=Flask-OAuthlib
 Flask-SSLify==0.1.5
 itsdangerous==0.24
 Jinja2==2.7.3
