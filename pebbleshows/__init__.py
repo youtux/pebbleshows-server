@@ -2,10 +2,12 @@ import os
 
 from six.moves.urllib import parse
 
-from flask import Flask, redirect, url_for, session, request, jsonify, render_template
+from flask import (Flask, redirect, url_for, session, request, jsonify,
+    render_template)
 from flask_sslify import SSLify
 from flask_bower import Bower
-from requests_oauthlib import OAuth2Session
+from flask_oauthlib.contrib.client import OAuth
+import oauthlib
 
 from .pin_database import PinDatabase
 
@@ -20,10 +22,18 @@ app.secret_key = os.environ["APP_SECRET"]
 sslify = SSLify(app, permanent=True, skips=['api/getLaunchData/'])
 Bower(app)
 
-TRAKTTV_AUTH_URL = 'https://trakt.tv/oauth/authorize'
-TRAKTTV_TOKEN_URL = "https://trakt.tv/oauth/token"
 
 pin_db = PinDatabase(MONGODB_URL)
+
+oauth = OAuth()
+trakttv = oauth.remote_app(
+    'trakttv',
+    base_url='https://trakt.tv/',
+    access_token_url='https://trakt.tv/oauth/token',
+    authorization_url='https://trakt.tv/oauth/authorize',
+    client_id=TRAKTV_CLIENT_ID,
+    client_secret=TRAKTV_CLIENT_SECRET
+    )
 
 
 def scheme(request):
@@ -39,6 +49,11 @@ def json_error(message, status=500):
     resp.status_code = status
 
     return resp
+
+
+@trakttv.tokengetter
+def get_trakttv_token(token=None):
+    return session.get('twitter_token')
 
 
 @app.route('/')
@@ -57,10 +72,9 @@ def login():
     redirect_uri = url_for(
         'authorized', _external=True, _scheme=scheme(request)
     )
-    trakttv = OAuth2Session(TRAKTV_CLIENT_ID, redirect_uri=redirect_uri)
-    authorization_url, state = trakttv.authorization_url(
-        TRAKTTV_AUTH_URL)
-    return redirect(authorization_url)
+    r = trakttv.authorize(callback_uri=redirect_uri)
+
+    return r
 
 
 @app.route('/logout')
@@ -70,21 +84,23 @@ def logout():
 
 @app.route('/login/authorized')
 def authorized():
-    redirect_uri = url_for(
-        'authorized', _external=True, _scheme=scheme(request)
-    )
-    trakttv = OAuth2Session(TRAKTV_CLIENT_ID, redirect_uri=redirect_uri)
+    try:
+        resp = trakttv.authorized_response()
+    except oauthlib.oauth2.rfc6749.errors.OAuth2Error:
+        return json_error("OAuth2 error")
 
-    token = trakttv.fetch_token(
-        TRAKTTV_TOKEN_URL,
-        client_secret=TRAKTV_CLIENT_SECRET,
-        authorization_response=request.url,
-        )
-    access_token = token['access_token']
+    if resp is None:
+        return json_error('Access denied: reason:%s error:%s'.format(
+            request.args['error'],
+            request.args['error_description']
+        ))
+
+    session['trakttv_token'] = resp['access_token']
+
     if session.get('pebble', False):
         session['pebble'] = False
         pebble_url = "pebblejs://close#" + parse.urlencode(
-            {'accessToken': access_token})
+            {'accessToken': session['trakttv_token']})
         return redirect(pebble_url)
     else:
         return redirect(url_for('index'))

@@ -2,12 +2,14 @@ APScheduler==3.0.2
 CherryPy==3.7.0
 Flask==0.10.1
 Flask-Bower==1.1.1
+Flask-OAuthlib==0.9.1
 Flask-SSLify==0.1.5
 itsdangerous==0.24
 Jinja2==2.7.3
 MarkupSafe==0.23
 oauthlib==0.7.2
 pymongo==3.0.1
+pypebbleapi==0.0.1
 pytz==2015.2
 rauth==0.7.1
 requests==2.6.2
