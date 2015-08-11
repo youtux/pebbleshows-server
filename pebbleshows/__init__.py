@@ -22,7 +22,6 @@ app.secret_key = os.environ["APP_SECRET"]
 sslify = SSLify(app, permanent=True, skips=['api/getLaunchData/'])
 Bower(app)
 
-
 pin_db = PinDatabase(MONGODB_URL)
 
 oauth = OAuth()
@@ -53,7 +52,7 @@ def json_error(message, status=500):
 
 @trakttv.tokengetter
 def get_trakttv_token(token=None):
-    return session.get('twitter_token')
+    return session.get('trakttv_token', "")
 
 
 @app.route('/')
