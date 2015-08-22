@@ -3,7 +3,7 @@ import os
 from six.moves.urllib import parse
 
 from flask import (Flask, redirect, url_for, session, request, jsonify,
-    render_template)
+    render_template, abort, flash)
 from flask_sslify import SSLify
 from flask_bower import Bower
 from flask_oauthlib.contrib.client import OAuth
@@ -50,6 +50,16 @@ def json_error(message, status=500):
     return resp
 
 
+def get_return_to_url():
+    if 'return_to' in request.args:
+        return request.args['return_to']
+
+    if 'return_to' in session:
+        return session['return_to']
+
+    return 'pebblejs://close#'
+
+
 @trakttv.tokengetter
 def get_trakttv_token(token=None):
     return session.get('trakttv_token', "")
@@ -63,10 +73,7 @@ def index():
 @app.route('/pebbleConfig/')
 def pebble_config():
     session['pebble'] = True
-    if 'return_to' in request.args:
-        session['return_to'] = request.args['return_to']
-    else:
-        session['return_to'] = 'pebblejs://close#'
+    session['return_to'] = get_return_to_url()
 
     return render_template('pebbleConfig.html')
 
@@ -74,12 +81,16 @@ def pebble_config():
 @app.route('/pebbleConfig/return')
 def pebble_config_return():
     if 'return_to' not in session:
-        return json_error('You shall not be here')
+        return abort(403)
 
     url = session['return_to'] + parse.urlencode(
-        {'accessToken': trakttv.obtain_token()}
+        {'accessToken': session['trakttv_token']}
     )
     return redirect(url)
+
+@app.route('/pebbleConfig/landing')
+def pebble_config_landing():
+    return render_template('landing.html')
 
 
 @app.route('/login')
@@ -94,7 +105,13 @@ def login():
 
 @app.route('/logout')
 def logout():
-    return redirect(url_for('index'))
+    if session.get('logged', False):
+        session['logged'] = False
+        # return redirect('https://trakt.tv/logout')
+        return render_template('redirect.html', url='https://trakt.tv/logout')
+    else:
+        flash("Logged out", category='info')
+        return redirect(url_for('pebble_config'))
 
 
 @app.route('/login/authorized')
@@ -102,21 +119,23 @@ def authorized():
     try:
         resp = trakttv.authorized_response()
     except oauthlib.oauth2.rfc6749.errors.OAuth2Error:
-        return json_error("OAuth2 error")
+        flash("OAuth2 error.", 'error')
+        return redirect(url_for('pebble_config'))
 
     if resp is None:
-        return json_error('Access denied: reason:%s error:%s'.format(
-            request.args['error'],
-            request.args['error_description']
-        ))
+        flash("Error. Either you or trakt.tv refused the access to your account.", 'error')
+        return redirect(url_for('pebble_config'))
 
+    flash('Login successful', 'info')
     session['trakttv_token'] = resp['access_token']
+    session['logged'] = True
 
     if session.get('pebble', False):
-        session['pebble'] = False
-        return pebble_config_return()
+        return redirect(url_for('pebble_config_landing'))
     else:
         return redirect(url_for('index'))
+
+
 
 
 @app.route('/api/getLaunchData/<int:launch_code>')

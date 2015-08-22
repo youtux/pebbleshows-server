@@ -1,35 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport">
-  <title>Shows configuration page for Pebble</title>
-  <link rel="stylesheet" href="{{ url_for('bower.static', filename='pebble-slate/dist/css/slate.css') }}">
-</head>
-<body>
-  <div class="item-container">
-    <div class="item-container-header">Shows configuration</div>
-    <div class="item-container-content">
-      <div class="item">
-        <p>
-        In order to use the watchapp, you need to log-in to <a href="https://trakt.tv">trakt.tv</a>
-            <a href="/login" rel="external">
-            <div class="button-container">
-              <input type="button" class="item-button" value="Log-in">
-            </div>
-            </a>
-        </p>
-        <br>
-        <p>
-            <a href="http://trakt.tv/logout">
-            <div class="button-container">
-              <input type="button" class="item-button" value="Log-out">
-            </div>
-            </a>
-        </p>
-      </div>
+{% extends "layout.html" %}
+{% block title %}Shows configuration page for Pebble{% endblock %}
+
+{% block content %}
+  <div class="item-container-header">{{ self.title() }}</div>
+  <div class="item-container-content">
+    <div class="item">
+      <p>
+        Hello! The Shows watchapp uses <a href="https://trakt.tv">trakt.tv</a> to keep
+        track of your shows.
+        If you have never used trakt.tv before, please <a href="https://trakt.tv/auth/join">follow me</a> and create an account.
+        In order to see the shows on the watchapp, you must mark them as "Watched" or
+        add them to the "Watchlist".
+      </p>
+      <p>
+        When you are ready to go, follow the big button and enjoy the app!
+        <a href="/login" rel="external">
+          <div class="button-container">
+            <input type="button" class="item-button" value="Connect the app to trakt.tv">
+          </div>
+        </a>
+      </p>
+      <br>
     </div>
   </div>
-  <script type="text/javascript" src="{{ url_for('bower.static', filename='pebble-slate/dist/js/slate.js') }}"></script>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}Shows configuration page for Pebble{% endblock %}
+
+{% block content %}
+  <div class="item-container-header">{{ self.title() }}</div>
+  <div class="item-container-content">
+    <div class="item">
+      <p>
+        Nice! The watchapp is now ready!
+        {#You can also use the "Discover" menu in the watchapp to find and add some shows!#}
+        <a href="{{ url_for('pebble_config_return') }}">
+        <div class="button-container">
+          <input type="button" class="item-button" value="Return to the app!">
+        </div>
+        </a>
+      </p>
+    </div>
+    <div class="item">
+      <a href="{{ url_for('logout') }}">
+        <div class="button-container">
+          <input type="button" style="background-color: green;" class="item-button" value="Log-out">
+        </div>
+        </a>
+    </div>
+  </div>
+{% endblock %}

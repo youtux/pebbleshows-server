@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport">
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('bower.static', filename='pebble-slate/dist/css/slate.css') }}">
+</head>
+<body>
+  <div class="item-container">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+      {% if messages %}
+        <div class="item-container-header">
+        {% for category, message in messages %}
+          <div class="item">{{ message }}</div>
+        {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
+  <script type="text/javascript" src="{{ url_for('bower.static', filename='pebble-slate/dist/js/slate.js') }}"></script>
+</body>
+</html>
