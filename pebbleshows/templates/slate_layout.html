@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport">
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('bower.static', filename='pebble-slate/dist/css/slate.css') }}">
+  <style type="text/css">
+  .title {
+    padding: 15px 10px;
+    text-transform: uppercase;
+    font-family: 'PT Sans', sans-serif;
+    font-size: 1.2em;
+    font-weight: 500;
+    color: #888888;
+    text-align: center;
+  }
+  .alert-box {
+    text-align: center;
+    color: #555;
+    border-radius:10px;
+    font-size: 0.9em;
+    font-family:'PT Sans', sans-serif;
+    padding:10px 10px 10px 10px;
+    margin:10px;
+  }
+  .alert-box span {
+    font-weight:bold;
+    text-transform:uppercase;
+  }
+  .error {
+    background:#ffecec no-repeat 10px 50%;
+    border:1px solid #f5aca6;
+  }
+  .success {
+    background:#e9ffd9 no-repeat 10px 50%;
+    border:1px solid #a6ca8a;
+  }
+  .warning {
+    background:#fff8c4 no-repeat 10px 50%;
+    border:1px solid #f2c779;
+  }
+  .info {
+    background:#e3f7fc no-repeat 10px 50%;
+    border:1px solid #8ed9f6;
+  }
+  </style>
+</head>
+<body>
+  <h1 class="title">{{ self.title() }}</h1>
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      <div>
+      {% for category, message in messages %}
+        <div class="alert-box {{ category }}">{{ message }}</div>
+      {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+  </div>
+  <script type="text/javascript" src="{{ url_for('bower.static', filename='pebble-slate/dist/js/slate.js') }}"></script>
+</body>
+</html>

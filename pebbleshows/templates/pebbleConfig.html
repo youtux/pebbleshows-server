@@ -1,26 +1,26 @@
-{% extends "layout.html" %}
-{% block title %}Shows configuration page for Pebble{% endblock %}
+{% extends "slate_layout.html" %}
+{% block title %}Shows configuration page{% endblock %}
 
 {% block content %}
-  <div class="item-container-header">{{ self.title() }}</div>
+<div class="item-container">
   <div class="item-container-content">
     <div class="item">
-      <p>
-        Hello! The Shows watchapp uses <a href="https://trakt.tv">trakt.tv</a> to keep
-        track of your shows.
-        If you have never used trakt.tv before, please <a href="https://trakt.tv/auth/join">follow me</a> and create an account.
-        In order to see the shows on the watchapp, you must mark them as "Watched" or
-        add them to the "Watchlist".
-      </p>
-      <p>
-        When you are ready to go, follow the big button and enjoy the app!
-        <a href="/login" rel="external">
-          <div class="button-container">
-            <input type="button" class="item-button" value="Connect the app to trakt.tv">
-          </div>
-        </a>
-      </p>
-      <br>
+      Hello! The Shows watchapp uses <a href="https://trakt.tv">trakt.tv</a> to keep
+      track of your shows.
+      If you have never used trakt.tv before, please <a href="https://trakt.tv/auth/join">follow me</a> and create an account.
+    </div>
+    <div class="item">
+      In order to see the shows on the watchapp, you must mark them as "Watched" or
+      add them to the "Watchlist".
+      When you are ready to go, follow the big button and enjoy the app!
     </div>
   </div>
+</div>
+<div class="item-container">
+  <div class="button-container">
+    <a href="{{ url_for('login') }}">
+      <input type="button" class="item-button" value="Connect the app to trakt.tv">
+    </a>
+  </div>
+</div>
 {% endblock %}

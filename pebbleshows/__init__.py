@@ -88,6 +88,7 @@ def pebble_config_return():
     )
     return redirect(url)
 
+
 @app.route('/pebbleConfig/landing')
 def pebble_config_landing():
     return render_template('landing.html')
@@ -110,7 +111,7 @@ def logout():
         # return redirect('https://trakt.tv/logout')
         return render_template('redirect.html', url='https://trakt.tv/logout')
     else:
-        flash("Logged out", category='info')
+        flash("Logout successful", category='info')
         return redirect(url_for('pebble_config'))
 
 
@@ -119,14 +120,13 @@ def authorized():
     try:
         resp = trakttv.authorized_response()
     except oauthlib.oauth2.rfc6749.errors.OAuth2Error:
-        flash("OAuth2 error.", 'error')
+        flash("OAuth2 error", 'error')
         return redirect(url_for('pebble_config'))
 
     if resp is None:
-        flash("Error. Either you or trakt.tv refused the access to your account.", 'error')
+        flash("Error: either you or the server denied the access to your account", 'error')
         return redirect(url_for('pebble_config'))
 
-    flash('Login successful', 'info')
     session['trakttv_token'] = resp['access_token']
     session['logged'] = True
 
@@ -134,8 +134,6 @@ def authorized():
         return redirect(url_for('pebble_config_landing'))
     else:
         return redirect(url_for('index'))
-
-
 
 
 @app.route('/api/getLaunchData/<int:launch_code>')
