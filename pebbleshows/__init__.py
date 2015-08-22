@@ -61,9 +61,25 @@ def index():
 
 
 @app.route('/pebbleConfig/')
-def pebbleConfig():
+def pebble_config():
     session['pebble'] = True
+    if 'return_to' in request.args:
+        session['return_to'] = request.args['return_to']
+    else:
+        session['return_to'] = 'pebblejs://close#'
+
     return render_template('pebbleConfig.html')
+
+
+@app.route('/pebbleConfig/return')
+def pebble_config_return():
+    if 'return_to' not in session:
+        return json_error('You shall not be here')
+
+    url = session['return_to'] + parse.urlencode(
+        {'accessToken': trakttv.obtain_token()}
+    )
+    return redirect(url)
 
 
 @app.route('/login')
@@ -98,9 +114,7 @@ def authorized():
 
     if session.get('pebble', False):
         session['pebble'] = False
-        pebble_url = "pebblejs://close#" + parse.urlencode(
-            {'accessToken': session['trakttv_token']})
-        return redirect(pebble_url)
+        return pebble_config_return()
     else:
         return redirect(url_for('index'))
 
