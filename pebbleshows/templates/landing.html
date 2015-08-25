@@ -1,27 +1,47 @@
 {% extends "slate_layout.html" %}
-{% block title %}Shows configuration page{% endblock %}
+{% block title %}Nice!{% endblock %}
 
 {% block content %}
 <div class="item-container">
   <div class="item-container-content">
     <div class="item">
-      <p>
-        Nice! The watchapp is now ready!
+      <p class="center">
+        You have successfully logged into Trakt.tv.
       </p>
     </div>
+  </div>
+</div>
+<div class="item-container center">
+  <img src="{{ url_for('static', filename='images/timeline-example.gif') }}">
+</div>
+<div class="item-container">
+  <div class="item-container-content">
+    <p class="center">
+      In order to see the shows on the watchapp, you must mark them as <strong>Watched</strong> or
+      add them to the <strong>Watchlist</strong>.
+    </p>
+    <p class="center">
+      You can also use the <strong>Popular</strong> menu in the watchapp to find and add some shows!
+    </p>
   </div>
 </div>
 <div class='item-container'>
   <div class="button-container">
     <a href="{{ url_for('pebble_config_return') }}">
-      <input type="button" class="item-button" value="Return to the app!">
+      <input type="button" class="item-button" value="Close">
     </a>
   </div>
 </div>
 <div class='item-container'>
   <div class="button-container">
+    <hr>
+  </div>
+</div>
+<div class='item-container'>
+  <div class="button-container">
     <a href="{{ url_for('logout') }}">
-      <input type="button" style="background-color: green;" class="item-button" value="Log-out">
+      <input type="button" class="item-button item-button-border" value="Log-out">
+      <!-- <input type="button" style="background-color: green;" class="item-button" value="Log-out"> -->
     </a>
   </div>
 </div>

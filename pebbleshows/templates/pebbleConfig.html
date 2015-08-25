@@ -1,26 +1,21 @@
 {% extends "slate_layout.html" %}
-{% block title %}Shows configuration page{% endblock %}
+{% block title %}Shows{% endblock %}
 
 {% block content %}
 <div class="item-container">
   <div class="item-container-content">
     <div class="item">
-      Hello! The Shows watchapp uses <a href="https://trakt.tv">trakt.tv</a> to keep
-      track of your shows.
-      If you have never used trakt.tv before, please <a href="https://trakt.tv/auth/join">follow me</a> and create an account.
-    </div>
-    <div class="item">
-      In order to see the shows on the watchapp, you must mark them as "Watched" or
-      add them to the "Watchlist".
-      Alternatively, you can also use the "Popular" menu in the watchapp to find and add some shows!
-      When you are ready to go, follow the big button and enjoy the app!
+      <p class="center">
+        Hello! The Shows watchapp uses <a href="https://trakt.tv">trakt.tv</a> to keep
+        track of your shows.
+      </p>
     </div>
   </div>
 </div>
 <div class="item-container">
   <div class="button-container">
     <a href="{{ url_for('login') }}">
-      <input type="button" class="item-button" value="Connect the app to trakt.tv">
+      <input type="button" class="item-button" value="Connect the app to Trakt.tv">
     </a>
   </div>
 </div>

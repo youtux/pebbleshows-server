@@ -6,15 +6,6 @@
   <title>{% block title %}{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('bower.static', filename='pebble-slate/dist/css/slate.css') }}">
   <style type="text/css">
-  .title {
-    padding: 15px 10px;
-    text-transform: uppercase;
-    font-family: 'PT Sans', sans-serif;
-    font-size: 1.2em;
-    font-weight: 500;
-    color: #888888;
-    text-align: center;
-  }
   .alert-box {
     text-align: center;
     color: #555;
@@ -44,10 +35,20 @@
     background:#e3f7fc no-repeat 10px 50%;
     border:1px solid #8ed9f6;
   }
+  .center {
+    text-align: center
+  }
+  .item-button-border {
+    border: 2px #FF4700 solid;
+    background-color: #A8A8A8;
+  }
+
   </style>
 </head>
 <body>
-  <h1 class="title">{{ self.title() }}</h1>
+  <div class="item-container">
+    <h1 class="center">{{ self.title() }}</h1>
+  </div>
   {% with messages = get_flashed_messages(with_categories=True) %}
     {% if messages %}
       <div>
