@@ -22,7 +22,8 @@ MONGODB_URL = os.environ["MONGODB_URL"]
 
 app = Flask(__name__)
 app.secret_key = os.environ["APP_SECRET"]
-sslify = SSLify(app, permanent=True, skips=['api/getLaunchData/'])
+sslify = SSLify(app, permanent=True,
+    skips=['api/getLaunchData/', 'convert2png64'])
 Bower(app)
 
 pin_db = PinDatabase(MONGODB_URL)
