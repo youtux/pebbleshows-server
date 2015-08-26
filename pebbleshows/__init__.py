@@ -1,14 +1,17 @@
 import os
+import io
+from functools import lru_cache
 
-from six.moves.urllib import parse
+from urllib import parse
 
 from flask import (Flask, redirect, url_for, session, request, jsonify,
-    render_template, abort, flash)
+    render_template, abort, flash, send_file)
 from flask_sslify import SSLify
 from flask_bower import Bower
 from flask_oauthlib.contrib.client import OAuth
 import oauthlib
 
+from .image_converter import download_and_convert_to_png64
 from .pin_database import PinDatabase
 
 
@@ -68,6 +71,39 @@ def get_trakttv_token(token=None):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@lru_cache(maxsize=500)
+def cached_png64(url, *args, **kwargs):
+    return download_and_convert_to_png64(url, *args, **kwargs)
+
+
+@app.route('/convert2png64')
+def convert2png64():
+    if 'url' not in request.args:
+        return jsonify(error='No url provided')
+
+    width = request.args.get('width', None)
+    if width is not None:
+        width = int(width)
+
+    heigth = request.args.get('heigth', None)
+    if heigth is not None:
+        heigth = int(heigth)
+
+    ratio = request.args.get('ratio', None)
+    if ratio is not None:
+        ratio = float(ratio)
+
+    url = request.args['url']
+
+    png64_data = cached_png64(url, width=width, heigth=heigth, ratio=ratio)
+
+    basename = os.path.splitext(os.path.basename(url))[0]
+    download_name = basename + '.png'
+
+    return send_file(io.BytesIO(png64_data), as_attachment=True,
+        attachment_filename=download_name)
 
 
 @app.route('/pebbleConfig/')
