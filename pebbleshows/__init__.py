@@ -88,9 +88,9 @@ def convert2png64():
     if width is not None:
         width = int(width)
 
-    heigth = request.args.get('heigth', None)
-    if heigth is not None:
-        heigth = int(heigth)
+    height = request.args.get('height', None)
+    if height is not None:
+        height = int(height)
 
     ratio = request.args.get('ratio', None)
     if ratio is not None:
@@ -98,7 +98,7 @@ def convert2png64():
 
     url = request.args['url']
 
-    png64_data = cached_png64(url, width=width, heigth=heigth, ratio=ratio)
+    png64_data = cached_png64(url, width=width, height=height, ratio=ratio)
 
     basename = os.path.splitext(os.path.basename(url))[0]
     download_name = basename + '.png'
