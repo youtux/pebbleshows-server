@@ -30,7 +30,7 @@ Getting all-show-schedule from {start_date} for {days}""".format(
         r = self.session.get(url=url)
 
         self.l.info("Got all-show-schedule")
-        self.l.debug(u"{}\t{}".format(r.status_code, r.text))
+        self.l.debug(f"{r.status_code}\t{r.text}")
 
         r.raise_for_status()
 
