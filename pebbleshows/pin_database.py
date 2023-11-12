@@ -26,12 +26,10 @@ class PinDatabase(object):
     def all_pin_ids(self):
         cursor = self.db_pins.find(projection={'pin.id': True})
 
-        pin_ids = {el['pin']['id'] for el in cursor}
-
-        return pin_ids
+        return {el['pin']['id'] for el in cursor}
 
     def pin_for_launch_code(self, launch_code):
         pin = self.db_pins.find_one({'pin.actions.launchCode': launch_code})
         if pin is None:
-            raise KeyError("No pin for launch_code {}".format(launch_code))
+            raise KeyError(f"No pin for launch_code {launch_code}")
         return pin

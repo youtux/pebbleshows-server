@@ -42,7 +42,7 @@ def create_episode_pin(
         season=season_number, episode=episode_number)
 
     # pin_title = show_title
-    pin_title = "{} | {}".format(show_title, season_episode_str)
+    pin_title = f"{show_title} | {season_episode_str}"
 
     if not episode_title:
         episode_title = ""
@@ -91,10 +91,8 @@ def send_and_log_pin(pin, topics, metadata):
         return
     pins_db.upsert(pin, metadata)
 
-    l.info("Pin (id={}, title={}) sent and updated.".format(
-        pin["id"],
-        pin["layout"].get("title", None),
-        )
+    l.info(
+        f'Pin (id={pin["id"]}, title={pin["layout"].get("title", None)}) sent and updated.'
     )
 
 
@@ -123,7 +121,7 @@ def fetch_shows_and_send_pins():
             pin_id = "schedule-{episode_id}".format(episode_id=episode_id)
 
             if pin_id in pin_ids_already_sent:
-                l.debug("Pin (id={}) already sent. skipping.".format(pin_id))
+                l.debug(f"Pin (id={pin_id}) already sent. skipping.")
                 continue
 
             pin = create_episode_pin(

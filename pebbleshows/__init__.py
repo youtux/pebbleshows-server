@@ -58,10 +58,7 @@ def get_return_to_url():
     if 'return_to' in request.args:
         return request.args['return_to']
 
-    if 'return_to' in session:
-        return session['return_to']
-
-    return 'pebblejs://close#'
+    return session['return_to'] if 'return_to' in session else 'pebblejs://close#'
 
 
 @trakttv.tokengetter
@@ -101,7 +98,7 @@ def convert2png64():
     png64_data = cached_png64(url, width=width, height=height, ratio=ratio)
 
     basename = os.path.splitext(os.path.basename(url))[0]
-    download_name = basename + '.png'
+    download_name = f'{basename}.png'
 
     return send_file(io.BytesIO(png64_data), as_attachment=True,
         attachment_filename=download_name)
@@ -136,9 +133,7 @@ def login():
     redirect_uri = url_for(
         'authorized', _external=True, _scheme=scheme(request)
     )
-    r = trakttv.authorize(callback_uri=redirect_uri)
-
-    return r
+    return trakttv.authorize(callback_uri=redirect_uri)
 
 
 @app.route('/logout')
